@@ -1,7 +1,9 @@
 import secrets
 from datetime import datetime, timedelta
+from typing import Optional
 
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -12,20 +14,24 @@ from src.core.models import Tenant
 router = APIRouter(prefix="/admin")
 
 
+class CreateTenantRequest(BaseModel):
+    name: str
+    rate_limit: int = 100
+    monthly_budget: Optional[float] = None
+
+
 @router.post("/tenants")
 async def create_tenant(
-    name: str,
-    rate_limit: int = 100,
-    monthly_budget: float = None,
+    body: CreateTenantRequest,
     db: Session = Depends(get_db),
 ):
     api_key = f"llm-gw-{secrets.token_urlsafe(32)}"
 
     tenant = Tenant(
-        name=name,
+        name=body.name,
         api_key=api_key,
-        rate_limit=rate_limit,
-        monthly_budget=monthly_budget,
+        rate_limit=body.rate_limit,
+        monthly_budget=body.monthly_budget,
     )
     db.add(tenant)
     db.commit()

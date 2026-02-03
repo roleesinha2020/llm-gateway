@@ -4,7 +4,7 @@
 def test_create_tenant(client):
     response = client.post(
         "/api/v1/admin/tenants",
-        params={"name": "Acme Corp", "rate_limit": 50},
+        json={"name": "Acme Corp", "rate_limit": 50},
     )
     assert response.status_code == 200
     data = response.json()

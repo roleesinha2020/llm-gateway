@@ -13,3 +13,9 @@ build/
 .coverage
 htmlcov/
 docs/multi_tenant_llm_gateway_guide.md
+
+# Secrets and API keys
+k8s/secrets.yaml
+terraform/terraform.tfvars
+*.tfvars
+!*.tfvars.example
