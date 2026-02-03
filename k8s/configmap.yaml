@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llm-gateway-config
+  namespace: llm-gateway
+data:
+  REDIS_HOST: "redis-service"
+  POSTGRES_HOST: "postgres-service"
+  API_V1_STR: "/api/v1"
+  DEFAULT_RATE_LIMIT: "100"
+  CACHE_TTL: "3600"
+  LOG_LEVEL: "INFO"

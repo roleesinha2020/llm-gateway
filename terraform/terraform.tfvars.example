@@ -1,0 +1,5 @@
+openai_api_key    = "sk-..."
+anthropic_api_key = "sk-ant-..."
+secret_key        = "your-secret-key"
+postgres_password = "your-postgres-password"
+gateway_image     = "your-registry/llm-gateway:v1.0.0"

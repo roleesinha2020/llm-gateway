@@ -1,0 +1,108 @@
+{
+  "dashboard": {
+    "title": "LLM Gateway Metrics",
+    "uid": "llm-gateway",
+    "timezone": "browser",
+    "refresh": "10s",
+    "panels": [
+      {
+        "title": "Requests per Minute",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(llm_gateway_requests_total[1m])) by (provider)",
+            "legendFormat": "{{ provider }}"
+          }
+        ]
+      },
+      {
+        "title": "Request Latency (p50 / p95 / p99)",
+        "type": "timeseries",
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(llm_gateway_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p50"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(llm_gateway_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(llm_gateway_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p99"
+          }
+        ]
+      },
+      {
+        "title": "Cost by Tenant (USD)",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum by (tenant_id) (llm_gateway_cost_total)",
+            "legendFormat": "{{ tenant_id }}"
+          }
+        ]
+      },
+      {
+        "title": "Cache Hit Rate",
+        "type": "gauge",
+        "gridPos": { "x": 12, "y": 8, "w": 6, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(llm_gateway_cache_hits_total[5m])) / sum(rate(llm_gateway_requests_total[5m]))"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 0.3, "color": "yellow" },
+                { "value": 0.6, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "Rate Limit Violations",
+        "type": "timeseries",
+        "gridPos": { "x": 18, "y": 8, "w": 6, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(llm_gateway_rate_limit_exceeded_total[5m])) by (tenant_id)",
+            "legendFormat": "{{ tenant_id }}"
+          }
+        ]
+      },
+      {
+        "title": "Token Usage by Provider",
+        "type": "timeseries",
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(rate(llm_gateway_tokens_total[5m])) by (provider, type)",
+            "legendFormat": "{{ provider }} - {{ type }}"
+          }
+        ]
+      },
+      {
+        "title": "Active Requests",
+        "type": "stat",
+        "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(llm_gateway_active_requests) by (provider)",
+            "legendFormat": "{{ provider }}"
+          }
+        ]
+      }
+    ]
+  }
+}
