@@ -12,3 +12,4 @@ build/
 *.egg
 .coverage
 htmlcov/
+docs/multi_tenant_llm_gateway_guide.md
